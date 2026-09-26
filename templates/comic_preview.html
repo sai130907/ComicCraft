@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        ComicCraft - Your Comic
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='css/style.css') }}"
+    >
+
+    <style>
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .preview-header h1 {
+            font-size: 2.8rem;
+            color: #111827;
+            margin-bottom: 10px;
+        }
+
+        .preview-header p {
+            color: #6b7280;
+        }
+
+        .comic-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .comic-panel {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            box-shadow:
+                0 10px 30px rgba(
+                    0,
+                    0,
+                    0,
+                    0.07
+                );
+        }
+
+        .comic-panel:last-child {
+            grid-column: 1 / -1;
+            max-width: 540px;
+            width: 100%;
+            justify-self: center;
+        }
+
+        .panel-image {
+            width: 100%;
+            display: block;
+            background: #f3f4f6;
+        }
+
+        .panel-content {
+            padding: 20px;
+        }
+
+        .panel-number {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: #ede9fe;
+            color: #6d28d9;
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .panel-content h3 {
+            margin-bottom: 10px;
+            color: #111827;
+        }
+
+        .scene-description {
+            color: #4b5563;
+            margin-bottom: 15px;
+        }
+
+        .dialogue-box {
+            background: #f9fafb;
+            border-left: 4px solid #7c3aed;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .dialogue-label,
+        .narration-label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #7c3aed;
+        }
+
+        .narration-box {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .preview-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 40px auto;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            display: inline-block;
+            text-decoration: none;
+            border: none;
+            border-radius: 12px;
+            padding: 13px 22px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .primary-action {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .secondary-action {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .primary-action:hover {
+            background: #6d28d9;
+        }
+
+        .secondary-action:hover {
+            background: #f9fafb;
+        }
+
+        @media (max-width: 768px) {
+
+            .comic-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .comic-panel:last-child {
+                grid-column: auto;
+                max-width: none;
+            }
+
+            .preview-header h1 {
+                font-size: 2.1rem;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- Navigation -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            🎨 ComicCraft
+        </div>
+
+        <div class="nav-subtitle">
+            Your AI Generated Comic
+        </div>
+
+    </header>
+
+
+    <!-- Main -->
+
+    <main class="container">
+
+
+        <!-- Header -->
+
+        <section class="preview-header">
+
+            <div class="hero-badge">
+                ✨ Comic Generated Successfully
+            </div>
+
+            <h1>
+                {{ title }}
+            </h1>
+
+            <p>
+                Your five-panel comic is ready!
+            </p>
+
+        </section>
+
+
+        <!-- Comic Panels -->
+
+        <section class="comic-grid">
+
+
+            {% for panel in layout %}
+
+            <article class="comic-panel">
+
+
+                <!-- Panel Image -->
+
+                <img
+                    src="{{ panel.image }}"
+                    alt="Comic Panel {{ panel.panel_number }}"
+                    class="panel-image"
+                >
+
+
+                <!-- Panel Information -->
+
+                <div class="panel-content">
+
+
+                    <div class="panel-number">
+
+                        Panel {{ panel.panel_number }}
+
+                    </div>
+
+
+                    <h3>
+                        Scene
+                    </h3>
+
+
+                    <p class="scene-description">
+
+                        {{ panel.scene_description }}
+
+                    </p>
+
+
+                    <!-- Dialogue -->
+
+                    {% if panel.dialogue %}
+
+                    <div class="dialogue-box">
+
+                        <div class="dialogue-label">
+                            Dialogue
+                        </div>
+
+                        <p>
+                            "{{ panel.dialogue }}"
+                        </p>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <!-- Narration -->
+
+                    {% if panel.narration %}
+
+                    <div class="narration-box">
+
+                        <div class="narration-label">
+                            Narration
+                        </div>
+
+                        <p>
+                            {{ panel.narration }}
+                        </p>
+
+                    </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+            </article>
+
+            {% endfor %}
+
+
+        </section>
+
+
+        <!-- Actions -->
+
+        <section class="preview-actions">
+
+
+            {% if pdf_path %}
+
+            <a
+                href="{{ pdf_path }}"
+                class="action-button primary-action"
+                download
+            >
+                📥 Download PDF
+            </a>
+
+            {% endif %}
+
+
+            <a
+                href="/"
+                class="action-button secondary-action"
+            >
+                ← Create Another Comic
+            </a>
+
+
+        </section>
+
+
+    </main>
+
+
+    <!-- Footer -->
+
+    <footer>
+
+        <p>
+            © 2026 ComicCraft
+        </p>
+
+        <p>
+            Created with Generative AI
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

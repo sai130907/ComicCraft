@@ -1,0 +1,21 @@
+# Virtual environment
+.venv/
+
+# Environment variables
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Generated images
+static/panels/*.png
+
+# Generated PDFs
+static/exports/*.pdf
+
+# Test image
+hf_test.png
+
+# VS Code
+.vscode/
