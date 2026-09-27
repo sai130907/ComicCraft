@@ -1,5 +1,7 @@
 import os
+
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -15,23 +17,29 @@ class Settings:
     # AI models
     GEMINI_FLASH_MODEL = os.getenv(
         "GEMINI_FLASH_MODEL",
-        "gemini-3.8-flash"
+        "gemini-3.5-flash",
     )
 
     GEMINI_PRO_MODEL = os.getenv(
         "GEMINI_PRO_MODEL",
-        "gemini-2.5-pro"
+        "gemini-3.1-pro-preview",
     )
 
     IMAGE_MODEL = os.getenv(
         "IMAGE_MODEL",
-        "black-forest-labs/FLUX.1-schnell"
+        "black-forest-labs/FLUX.1-schnell",
+    )
+
+    # Hugging Face provider
+    HF_PROVIDER = os.getenv(
+        "HF_PROVIDER",
+        "auto",
     )
 
     # Demo mode
     MOCK_MODE = os.getenv(
         "MOCK_MODE",
-        "true"
+        "false",
     ).lower() == "true"
 
     # Comic settings

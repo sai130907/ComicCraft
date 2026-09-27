@@ -12,7 +12,10 @@ class PDFService:
 
     def __init__(self):
         self.output_dir = Path(settings.EXPORT_DIR)
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.output_dir.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
 
     def create_pdf(
         self,
@@ -20,11 +23,6 @@ class PDFService:
         panels: List[ComicPanel],
         panel_image_paths: List[str],
     ) -> str:
-        """
-        Create a PDF containing the comic panels.
-
-        Returns the browser-accessible URL of the PDF.
-        """
 
         safe_title = self._safe_filename(title)
 
@@ -75,6 +73,7 @@ class PDFService:
 
         # Comic pages
         for index, panel in enumerate(panels):
+
             pdf.add_page()
 
             pdf.set_font(
@@ -92,13 +91,14 @@ class PDFService:
 
             pdf.ln(15)
 
-            # Add panel image if available
             if index < len(panel_image_paths):
+
                 image_path = self._convert_to_local_path(
                     panel_image_paths[index]
                 )
 
                 if image_path.exists():
+
                     pdf.image(
                         str(image_path),
                         x=15,
@@ -137,6 +137,7 @@ class PDFService:
 
             # Narration
             if panel.narration:
+
                 pdf.ln(5)
 
                 pdf.set_font(
@@ -171,7 +172,6 @@ class PDFService:
 
     @staticmethod
     def _safe_filename(filename: str) -> str:
-        """Create a safe filename."""
 
         allowed = (
             "abcdefghijklmnopqrstuvwxyz"
@@ -193,10 +193,6 @@ class PDFService:
 
     @staticmethod
     def _clean_text(text: str) -> str:
-        """
-        Convert text to characters supported by
-        the default FPDF Helvetica font.
-        """
 
         return (
             text
@@ -209,14 +205,9 @@ class PDFService:
         )
 
     @staticmethod
-    def _convert_to_local_path(url_path: str) -> Path:
-        """
-        Convert a browser URL such as:
-
-        /static/panels/panel_1.png
-
-        into a local filesystem path.
-        """
+    def _convert_to_local_path(
+        url_path: str,
+    ) -> Path:
 
         clean_path = url_path.lstrip("/")
 

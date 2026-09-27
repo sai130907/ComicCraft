@@ -30,7 +30,8 @@ class ImageService:
 
         if self.token:
             self.client = InferenceClient(
-                api_key=self.token
+                api_key=self.token,
+                provider="auto",
             )
         else:
             self.client = None
@@ -49,9 +50,7 @@ class ImageService:
 
         filename = f"panel_{panel_number}.png"
 
-        output_path = (
-            self.output_dir / filename
-        )
+        output_path = self.output_dir / filename
 
         prompt = self._build_prompt(
             scene_description=scene_description,
@@ -69,29 +68,22 @@ class ImageService:
                 model=self.model,
             )
 
-            image.save(
-                str(output_path)
-            )
+            image.save(str(output_path))
 
         except Exception as exc:
-
             raise RuntimeError(
                 "Hugging Face image generation failed: "
                 f"{exc}"
             ) from exc
 
-        return (
-            f"/static/panels/{filename}"
-        )
+        return f"/static/panels/{filename}"
 
     @staticmethod
     def _build_prompt(
         scene_description: str,
         image_prompt: str,
     ) -> str:
-        """
-        Build a consistent comic-style image prompt.
-        """
+        """Build a consistent comic-style image prompt."""
 
         return f"""
 Create a high-quality comic book panel.

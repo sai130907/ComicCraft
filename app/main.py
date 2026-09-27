@@ -61,7 +61,7 @@ app.mount(
 
 
 # ---------------------------------------------------------
-# Jinja2 templates
+# Templates
 # ---------------------------------------------------------
 
 templates = Jinja2Templates(
@@ -70,20 +70,12 @@ templates = Jinja2Templates(
 
 
 # ---------------------------------------------------------
-# Helper function
+# Comic generation workflow
 # ---------------------------------------------------------
 
 def generate_comic_data(
     comic_request: ComicRequest,
 ) -> dict[str, Any]:
-    """
-    Complete ComicCraft generation workflow:
-
-    1. Generate 5 comic panels with AI.
-    2. Generate an image for each panel.
-    3. Build the final layout.
-    4. Export the comic to PDF.
-    """
 
     panels = ai_service.generate_panels(
         story=comic_request.story,
@@ -96,6 +88,7 @@ def generate_comic_data(
     panel_image_paths = []
 
     for panel in panels:
+
         image_path = image_service.generate_panel(
             panel_number=panel.panel_number,
             scene_description=panel.scene_description,
@@ -110,6 +103,7 @@ def generate_comic_data(
         panels,
         panel_image_paths,
     ):
+
         layout.append(
             {
                 "panel_number": panel.panel_number,
@@ -139,7 +133,7 @@ def generate_comic_data(
 
 
 # ---------------------------------------------------------
-# Home page
+# Home
 # ---------------------------------------------------------
 
 @app.get(
@@ -147,9 +141,6 @@ def generate_comic_data(
     response_class=HTMLResponse,
 )
 async def home(request: Request):
-    """
-    Display the ComicCraft homepage.
-    """
 
     return templates.TemplateResponse(
         request=request,
@@ -161,7 +152,7 @@ async def home(request: Request):
 
 
 # ---------------------------------------------------------
-# Generate comic from HTML form
+# Generate comic
 # ---------------------------------------------------------
 
 @app.post(
@@ -176,11 +167,9 @@ async def generate_comic(
     tone: str = Form("funny"),
     art_style: str = Form("comic book"),
 ):
-    """
-    Receive the HTML form and generate a complete comic.
-    """
 
     try:
+
         comic_request = ComicRequest(
             story=story,
             character=character,
@@ -204,6 +193,9 @@ async def generate_comic(
         )
 
     except Exception as exc:
+
+        print(f"Comic generation error: {exc}")
+
         return templates.TemplateResponse(
             request=request,
             name="index.html",
@@ -216,7 +208,7 @@ async def generate_comic(
 
 
 # ---------------------------------------------------------
-# Generate comic from JSON API
+# JSON API
 # ---------------------------------------------------------
 
 @app.post(
@@ -225,11 +217,9 @@ async def generate_comic(
 async def generate_comic_json(
     comic_request: ComicRequest,
 ):
-    """
-    Generate a comic through a JSON API request.
-    """
 
     try:
+
         result = generate_comic_data(
             comic_request,
         )
@@ -248,6 +238,7 @@ async def generate_comic_json(
         )
 
     except Exception as exc:
+
         raise HTTPException(
             status_code=500,
             detail=str(exc),
@@ -255,7 +246,7 @@ async def generate_comic_json(
 
 
 # ---------------------------------------------------------
-# Test image generation
+# Image test
 # ---------------------------------------------------------
 
 @app.get(
@@ -264,13 +255,14 @@ async def generate_comic_json(
 )
 async def test_image(
     request: Request,
-    prompt: str = "A funny student discovering a robot in a college laboratory",
+    prompt: str = (
+        "A funny student discovering a robot "
+        "in a college laboratory"
+    ),
 ):
-    """
-    Developer utility for testing panel image generation.
-    """
 
     try:
+
         image_path = image_service.generate_panel(
             panel_number=99,
             scene_description=prompt,
@@ -289,8 +281,7 @@ async def test_image(
                 <h1>Image Generation Test</h1>
 
                 <p>
-                    Prompt:
-                    {prompt}
+                    Prompt: {prompt}
                 </p>
 
                 <img
@@ -309,6 +300,7 @@ async def test_image(
         )
 
     except Exception as exc:
+
         raise HTTPException(
             status_code=500,
             detail=str(exc),
@@ -316,7 +308,7 @@ async def test_image(
 
 
 # ---------------------------------------------------------
-# Export success page
+# Export success
 # ---------------------------------------------------------
 
 @app.get(
@@ -327,9 +319,6 @@ async def export_success(
     request: Request,
     pdf_path: str = "",
 ):
-    """
-    Display a PDF export confirmation page.
-    """
 
     return templates.TemplateResponse(
         request=request,
@@ -346,9 +335,6 @@ async def export_success(
 
 @app.get("/health")
 async def health():
-    """
-    Simple endpoint for checking whether the server is running.
-    """
 
     return {
         "status": "ok",
